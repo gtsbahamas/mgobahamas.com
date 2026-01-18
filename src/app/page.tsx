@@ -297,13 +297,13 @@ export default function Home() {
                 className="service-card glass-card-dark rounded-3xl p-8 text-center group"
               >
                 {/* Icon Container */}
-                <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
+                <div className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center shadow-lg transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 border border-white/20">
                   <Image
                     src={service.icon}
                     alt={service.title}
-                    width={48}
-                    height={48}
-                    className="w-12 h-12 brightness-0 invert"
+                    width={64}
+                    height={64}
+                    className="w-16 h-16 object-contain"
                   />
                 </div>
                 <h3 className="font-[family-name:var(--font-syne)] text-2xl font-bold text-white mb-4">
