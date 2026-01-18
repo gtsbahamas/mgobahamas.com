@@ -89,21 +89,24 @@ export default function InquiryPage() {
     setError(null);
 
     try {
-      const subject = encodeURIComponent(`Merchant Inquiry from ${formData.firstName} ${formData.lastName}`);
-      const body = encodeURIComponent(
-        `Name: ${formData.firstName} ${formData.lastName}\n` +
-        `Email: ${formData.email}\n` +
-        `Phone: ${formData.phone}\n` +
-        `Business Name: ${formData.businessName}\n` +
-        `Business Type: ${formData.businessType}\n` +
-        `Island: ${formData.island}\n\n` +
-        `Message:\n${formData.message}`
-      );
+      const response = await fetch("/api/inquiry", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-      window.location.href = `mailto:info@mgobahamas.com?subject=${subject}&body=${body}`;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to submit application");
+      }
+
       setSubmitted(true);
-    } catch {
-      setError("Something went wrong. Please try again or contact us directly at info@mgobahamas.com");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Something went wrong";
+      setError(`${message}. Please try again or contact us directly at info@mgobahamas.com`);
     } finally {
       setIsSubmitting(false);
     }
@@ -122,10 +125,7 @@ export default function InquiryPage() {
             Thank You!
           </h1>
           <p className="text-slate-600 text-lg mb-8 leading-relaxed">
-            Your email client should have opened with your inquiry. If it didn&apos;t, please email us directly at{" "}
-            <a href="mailto:info@mgobahamas.com" className="text-[#7cb342] hover:underline font-medium">
-              info@mgobahamas.com
-            </a>
+            Your merchant application has been submitted successfully. Our team will review your information and contact you within 24-48 hours.
           </p>
           <Link
             href="/"
