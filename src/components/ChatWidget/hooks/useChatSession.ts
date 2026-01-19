@@ -89,6 +89,11 @@ export function useChatSession() {
     localStorage.removeItem(SESSION_KEY);
   }, []);
 
+  // Add a message directly (used by voice integration)
+  const addMessage = useCallback((message: Message) => {
+    setMessages(prev => [...prev, message]);
+  }, []);
+
   return {
     sessionId,
     messages,
@@ -96,5 +101,6 @@ export function useChatSession() {
     error,
     sendMessage,
     clearSession,
+    addMessage,
   };
 }

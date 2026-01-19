@@ -25,3 +25,7 @@ export interface InquiryData {
 }
 
 export type ChatWidgetState = 'closed' | 'open' | 'minimized';
+
+export type InputMode = 'text' | 'voice';
+
+export type VoiceMode = 'listening' | 'speaking' | 'processing' | 'idle';
