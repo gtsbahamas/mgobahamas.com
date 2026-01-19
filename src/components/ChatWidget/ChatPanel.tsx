@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import type { Message } from './types';
+import { useChatSession } from './hooks/useChatSession';
 
 interface ChatPanelProps {
   isOpen: boolean;
@@ -11,9 +11,8 @@ interface ChatPanelProps {
 }
 
 export function ChatPanel({ isOpen, onClose, onMinimize }: ChatPanelProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const { messages, isLoading, sendMessage } = useChatSession();
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -26,48 +25,9 @@ export function ChatPanel({ isOpen, onClose, onMinimize }: ChatPanelProps) {
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
-
-    const userMessage: Message = {
-      id: crypto.randomUUID(),
-      role: 'user',
-      content: input.trim(),
-      timestamp: new Date(),
-    };
-
-    setMessages(prev => [...prev, userMessage]);
+    const message = input.trim();
     setInput('');
-    setIsLoading(true);
-
-    try {
-      // TODO: Connect to MGO Support API
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input.trim() }),
-      });
-
-      const data = await response.json();
-
-      const assistantMessage: Message = {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: data.message || 'Sorry, I encountered an error. Please try again.',
-        timestamp: new Date(),
-      };
-
-      setMessages(prev => [...prev, assistantMessage]);
-    } catch (error) {
-      console.error('Chat error:', error);
-      const errorMessage: Message = {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
+    await sendMessage(message);
   };
 
   if (!isOpen) return null;
@@ -108,6 +68,26 @@ export function ChatPanel({ isOpen, onClose, onMinimize }: ChatPanelProps) {
           <div className="text-center text-slate-500 mt-8">
             <p className="text-lg font-medium">Hi! I'm Mia</p>
             <p className="text-sm mt-1">How can I help you today?</p>
+            <div className="mt-4 space-y-2">
+              <button
+                onClick={() => sendMessage("I'd like to apply for a merchant account")}
+                className="block w-full text-left px-4 py-2 text-sm bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+              >
+                Apply for merchant account
+              </button>
+              <button
+                onClick={() => sendMessage("What services does MGO offer?")}
+                className="block w-full text-left px-4 py-2 text-sm bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+              >
+                Learn about services
+              </button>
+              <button
+                onClick={() => sendMessage("Which islands do you serve?")}
+                className="block w-full text-left px-4 py-2 text-sm bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+              >
+                Coverage areas
+              </button>
+            </div>
           </div>
         )}
         {messages.map((msg) => (
