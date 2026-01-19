@@ -3,6 +3,7 @@ import { Outfit, Syne } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { ChatWidget } from "@/components/ChatWidget";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -44,6 +45,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <ChatWidget />
       </body>
     </html>
   );
